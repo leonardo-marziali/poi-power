@@ -1,10 +1,14 @@
-package com.leomarzia.poipower;
+package com.github.leonardomarziali.poipower;
 
+import com.github.leonardomarziali.poipower.exceptions.file.FileNotProvidedException;
+import com.github.leonardomarziali.poipower.exceptions.jaxb.JaxbUnmarshallException;
+import com.github.leonardomarziali.poipower.exceptions.parser.MapOfObjectsPerSheetToSetNotProvidedException;
+import com.github.leonardomarziali.poipower.exceptions.parser.ObjectsOrListsToSetPerSheetKeyException;
+import com.github.leonardomarziali.poipower.exceptions.parser.WorkbookNotProvidedException;
+import com.github.leonardomarziali.poipower.exceptions.parser.XmlMapperNotProvidedException;
+import com.github.leonardomarziali.poipower.singleton.JaxbContextInstance;
+import com.github.leonardomarziali.poipower.tagprocessors.MapperProcessor;
 import com.leomarzia.poipower.api.tags.Mapper;
-import com.leomarzia.poipower.exception.file.FileNotProvidedException;
-import com.leomarzia.poipower.exception.jaxb.JaxbUnmarshallException;
-import com.leomarzia.poipower.exception.parser.ObjectsOrListsToSetPerSheetKeyException;
-import com.leomarzia.poipower.singleton.JaxbContextInstance;
 import jakarta.xml.bind.JAXBException;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -43,6 +47,7 @@ public class Parser {
             throw new FileNotProvidedException();
         }
         try {
+            // TODO: Add validation against xsd before unmarshall
             this.mapper = (Mapper) JaxbContextInstance.getInstance().getUnmarshaller().unmarshal(xmlMapper);
         } catch (JAXBException e) {
             throw new JaxbUnmarshallException(xmlMapper);
@@ -71,11 +76,22 @@ public class Parser {
         });
     }
 
+    public void parse() {
+        checkIfAllElementsHaveBeenSetForParse();
+        MapperProcessor mapperProcessor = new MapperProcessor(mapper);
+        mapperProcessor.process(getObjectsOrListsToSetPerSheetIndex(),
+                                getObjectsOrListsToSetPerSheetName(),
+                                getObjectsOrListsToSetPerSheetIndexOrName());
+    }
 
-//    public void parse() {
-//        for (var objectOrListToSetPerSheet : this.objectsOrListsToSetPerSheet.entrySet()) {
-//
-//        }
-//    }
-
+    private void checkIfAllElementsHaveBeenSetForParse() {
+        if (workbookToParse == null) {
+            throw new WorkbookNotProvidedException();
+        } else if (xmlMapper == null) {
+            throw new XmlMapperNotProvidedException();
+        } else if (objectsOrListsToSetPerSheetIndex == null && objectsOrListsToSetPerSheetName == null &&
+                   objectsOrListsToSetPerSheetIndexOrName == null) {
+            throw new MapOfObjectsPerSheetToSetNotProvidedException();
+        }
+    }
 }

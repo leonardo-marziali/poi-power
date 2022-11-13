@@ -1,9 +1,9 @@
-package com.leomarzia.poipower.utils;
+package com.github.leonardomarziali.poipower.utils;
 
-import com.leomarzia.poipower.exception.reflection.ConstructorNotFoundException;
-import com.leomarzia.poipower.exception.reflection.FieldNotFoundException;
-import com.leomarzia.poipower.exception.reflection.MethodNotFoundException;
-import com.leomarzia.poipower.exception.reflection.NewObjectInstanceException;
+import com.github.leonardomarziali.poipower.exceptions.reflection.ConstructorNotFoundException;
+import com.github.leonardomarziali.poipower.exceptions.reflection.FieldNotFoundException;
+import com.github.leonardomarziali.poipower.exceptions.reflection.MethodNotFoundException;
+import com.github.leonardomarziali.poipower.exceptions.reflection.NewObjectInstanceException;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;

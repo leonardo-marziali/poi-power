@@ -1,4 +1,4 @@
-package com.leomarzia.poipower.utils;
+package com.github.leonardomarziali.poipower.utils;
 
 public class StringUtils {
 

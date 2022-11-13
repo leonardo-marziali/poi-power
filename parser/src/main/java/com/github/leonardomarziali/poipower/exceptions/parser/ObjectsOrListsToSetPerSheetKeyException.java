@@ -1,4 +1,4 @@
-package com.leomarzia.poipower.exception.parser;
+package com.github.leonardomarziali.poipower.exceptions.parser;
 
 public class ObjectsOrListsToSetPerSheetKeyException extends RuntimeException {
 

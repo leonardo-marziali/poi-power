@@ -5,22 +5,26 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.leomarzia</groupId>
+        <groupId>com.github.leonardo-marziali</groupId>
         <artifactId>poi-power</artifactId>
         <version>1.0</version>
     </parent>
 
-    <groupId>com.leomarzia.poi-power</groupId>
+    <groupId>com.github.leonardo-marziali.poi-power</groupId>
     <artifactId>parser</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
     <dependencies>
 
-        <!-- Jakarta xml bind dependency -->
+        <!-- Jaxb impl and xml bind dependencies -->
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
         </dependency>
 
         <!-- Apache poi dependency -->
@@ -32,10 +36,13 @@
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
         </dependency>
+
+        <!-- Lombok dependency -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+
     </dependencies>
 
     <build>

@@ -1,4 +1,4 @@
-package com.leomarzia.poipower.exception.reflection;
+package com.github.leonardomarziali.poipower.exceptions.reflection;
 
 public class MethodNotFoundException extends RuntimeException {
 

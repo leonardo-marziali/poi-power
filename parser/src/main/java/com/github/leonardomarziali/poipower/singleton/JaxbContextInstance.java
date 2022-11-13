@@ -1,6 +1,6 @@
-package com.leomarzia.poipower.singleton;
+package com.github.leonardomarziali.poipower.singleton;
 
-import com.leomarzia.poipower.exception.jaxb.JaxbContextInstanceException;
+import com.github.leonardomarziali.poipower.exceptions.jaxb.JaxbContextInstanceException;
 import com.leomarzia.poipower.api.tags.Mapper;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
@@ -22,6 +22,7 @@ public class JaxbContextInstance {
             this.jaxbContext = JAXBContext.newInstance(Mapper.class);
             this.unmarshaller = this.jaxbContext.createUnmarshaller();
         } catch (JAXBException e) {
+            e.printStackTrace();
             throw new JaxbContextInstanceException();
         }
     }

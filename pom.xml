@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.leomarzia</groupId>
+    <groupId>com.github.leonardo-marziali</groupId>
     <artifactId>poi-power</artifactId>
     <version>1.0</version>
     <packaging>pom</packaging>
@@ -16,6 +16,7 @@
 
         <!-- Dependencies version -->
         <jakarta.xml.bind-api.version>4.0.0</jakarta.xml.bind-api.version>
+        <jaxb-impl.version>4.0.1</jaxb-impl.version>
         <apache.poi.version>5.2.3</apache.poi.version>
         <lombok.version>1.18.24</lombok.version>
 
@@ -26,11 +27,17 @@
     <dependencyManagement>
         <dependencies>
 
-            <!-- Jakarta xml bind manager -->
+            <!-- Jaxb impl and xml bind dependencies -->
             <dependency>
                 <groupId>jakarta.xml.bind</groupId>
                 <artifactId>jakarta.xml.bind-api</artifactId>
                 <version>${jakarta.xml.bind-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>${jaxb-impl.version}</version>
+                <scope>runtime</scope>
             </dependency>
 
             <!-- Apache poi manager -->

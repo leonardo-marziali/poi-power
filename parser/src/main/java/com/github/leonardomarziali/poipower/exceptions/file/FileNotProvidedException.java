@@ -1,4 +1,4 @@
-package com.leomarzia.poipower.exception.file;
+package com.github.leonardomarziali.poipower.exceptions.file;
 
 public class FileNotProvidedException extends RuntimeException{
 

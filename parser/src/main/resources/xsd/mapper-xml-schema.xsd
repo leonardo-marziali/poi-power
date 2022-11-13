@@ -1,7 +1,10 @@
 <?xml version="1.0" ?>
 
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="poi.power.api.parser.mapper"
-           xmlns="poi.power.api.parser.mapper"
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="https://github.com/leonardo-marziali/poi-power/tree/main/parser"
+           xmlns="https://github.com/leonardo-marziali/poi-power/tree/main/parser"
+           xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+           jaxb:version="2.0"
            elementFormDefault="qualified">
 
     <xs:element name="mapper">
@@ -81,14 +84,14 @@
         <xs:sequence>
             <xs:element name="entity" type="ChildEntity" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="range" type="xs:string"/>
+        <xs:attribute name="range" type="xs:string" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="RowTag">
         <xs:sequence>
             <xs:element name="cell" type="CellTag" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
-        <xs:attribute name="index" type="xs:int"/>
+        <xs:attribute name="index" type="xs:int" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="CellTag">
