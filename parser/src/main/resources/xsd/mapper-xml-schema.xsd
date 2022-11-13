@@ -1,0 +1,101 @@
+<?xml version="1.0" ?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="poi.power.api.parser.mapper"
+           xmlns="poi.power.api.parser.mapper"
+           elementFormDefault="qualified">
+
+    <xs:element name="mapper">
+        <xs:complexType>
+            <xs:choice>
+                <xs:element name="sheetByIndex" type="SheetByIndex" maxOccurs="unbounded"/>
+                <xs:element name="sheetByName" type="SheetByName" maxOccurs="unbounded"/>
+            </xs:choice>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="SheetByIndex">
+        <xs:complexContent>
+            <xs:extension base="Sheet">
+                <xs:attribute name="index" type="xs:int" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="SheetByName">
+        <xs:complexContent>
+            <xs:extension base="Sheet">
+                <xs:attribute name="name" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="Sheet">
+        <xs:choice>
+            <xs:element name="rootEntity" type="RootEntity"
+                        maxOccurs="unbounded"/>
+            <xs:element name="rootCollection" type="RootCollection"
+                        maxOccurs="unbounded"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="RootEntity">
+        <xs:choice>
+            <xs:element name="row" type="RowTag"
+                        maxOccurs="unbounded"/>
+            <xs:element name="iterator" type="Iterator"
+                        maxOccurs="unbounded"/>
+            <xs:element name="entity" type="ChildEntity"
+                        maxOccurs="unbounded"/>
+            <xs:element name="collection" type="ChildCollection"
+                        maxOccurs="unbounded"/>
+        </xs:choice>
+        <xs:attribute name="type" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="ChildEntity">
+        <xs:complexContent>
+            <xs:extension base="RootEntity">
+                <xs:attribute name="fieldNameInFather" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="RootCollection">
+        <xs:sequence>
+            <xs:element name="entity" type="ChildEntity" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="iterator" type="Iterator" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="collectionInstance" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="ChildCollection">
+        <xs:sequence>
+            <xs:element name="entity" type="ChildEntity" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="iterator" type="Iterator" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="listName" type="xs:string"/>
+        <xs:attribute name="collectionInstance" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="Iterator">
+        <xs:sequence>
+            <xs:element name="entity" type="ChildEntity" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="range" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="RowTag">
+        <xs:sequence>
+            <xs:element name="cell" type="CellTag" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="index" type="xs:int"/>
+    </xs:complexType>
+
+    <xs:complexType name="CellTag">
+        <xs:attribute name="index" type="xs:int" use="required"/>
+        <xs:attribute name="entityProperty" type="xs:string"/>
+        <xs:attribute name="type" type="xs:string"/>
+        <xs:attribute name="mandatory" type="xs:boolean" default="false"/>
+    </xs:complexType>
+
+</xs:schema>
