@@ -1,97 +1,94 @@
 package com.github.leonardomarziali.poipower;
 
-import com.github.leonardomarziali.poipower.exceptions.file.FileNotProvidedException;
+import com.github.leonardomarziali.poipower.exceptions.file.XmlNotProvidedException;
 import com.github.leonardomarziali.poipower.exceptions.jaxb.JaxbUnmarshallException;
-import com.github.leonardomarziali.poipower.exceptions.parser.MapOfObjectsPerSheetToSetNotProvidedException;
-import com.github.leonardomarziali.poipower.exceptions.parser.ObjectsOrListsToSetPerSheetKeyException;
+import com.github.leonardomarziali.poipower.exceptions.parser.ObjToSetNotFoundException;
 import com.github.leonardomarziali.poipower.exceptions.parser.WorkbookNotProvidedException;
-import com.github.leonardomarziali.poipower.exceptions.parser.XmlMapperNotProvidedException;
+import com.github.leonardomarziali.poipower.objtoset.props.ObjToSetProps;
+import com.github.leonardomarziali.poipower.processors.ParserProcessor;
+import com.github.leonardomarziali.poipower.processors.Processor;
 import com.github.leonardomarziali.poipower.singleton.JaxbContextInstance;
-import com.github.leonardomarziali.poipower.tagprocessors.MapperProcessor;
-import com.leomarzia.poipower.api.tags.Mapper;
+import com.leomarzia.poipower.api.tags.ParserTag;
 import jakarta.xml.bind.JAXBException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.File;
-import java.util.List;
 import java.util.Map;
+
+import static com.github.leonardomarziali.poipower.exceptions.parser.ObjToSetNotFoundException.ObjToSetNotFoundExceptionCases.EMPTY;
+import static com.github.leonardomarziali.poipower.exceptions.parser.ObjToSetNotFoundException.ObjToSetNotFoundExceptionCases.NULL;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @NoArgsConstructor
 @Getter
-@Setter
-//@SuppressWarnings("unused")
+@SuppressWarnings("unused")
 public class Parser {
 
     Workbook workbookToParse;
 
-    @Setter(AccessLevel.NONE)
+    @Getter(AccessLevel.NONE)
     File xmlMapper;
 
-    @Setter(AccessLevel.NONE)
-    Mapper mapper;
+    @Getter(AccessLevel.NONE)
+    ParserTag parserTag;
+
+    Map<String, ObjToSetProps> objToSet;
+
+    public void setWorkbookToParse(Workbook workbookToParse) {
+        if (workbookToParse == null) {
+            throw new WorkbookNotProvidedException();
+        } else {
+            this.workbookToParse = workbookToParse;
+        }
+    }
 
     public void setXmlMapper(File xmlMapper) {
         unmarshalXmlMapper(xmlMapper);
         this.xmlMapper = xmlMapper;
     }
 
+    public void setObjToSet(Map<String, ObjToSetProps> objToSet) {
+        if (objToSet == null) {
+            throw new ObjToSetNotFoundException(NULL);
+        } else if (objToSet.isEmpty()) {
+            throw new ObjToSetNotFoundException(EMPTY);
+        } else {
+            this.objToSet = objToSet;
+        }
+    }
+
     private void unmarshalXmlMapper(File xmlMapper) {
         // TODO: Add other file exception cases
         if (xmlMapper == null) {
-            throw new FileNotProvidedException();
+            throw new XmlNotProvidedException();
         }
         try {
             // TODO: Add validation against xsd before unmarshall
-            this.mapper = (Mapper) JaxbContextInstance.getInstance().getUnmarshaller().unmarshal(xmlMapper);
+            this.parserTag = (ParserTag) JaxbContextInstance.getInstance().getUnmarshaller().unmarshal(xmlMapper);
         } catch (JAXBException e) {
             throw new JaxbUnmarshallException(xmlMapper);
         }
     }
 
-    Map<Integer, List<?>> objectsOrListsToSetPerSheetIndex;
-
-    Map<String, List<?>> objectsOrListsToSetPerSheetName;
-
-    @Setter(AccessLevel.NONE)
-    Map<Object, List<?>> objectsOrListsToSetPerSheetIndexOrName;
-
-    public void setObjectsOrListsToSetPerSheetIndexOrName(Map<Object, List<?>> objectsOrListsToSetPerSheetIndexOrName) {
-        validateObjectsOrListsToSetPerSheet(objectsOrListsToSetPerSheetIndexOrName);
-        this.objectsOrListsToSetPerSheetIndexOrName = objectsOrListsToSetPerSheetIndexOrName;
-    }
-
-    private void validateObjectsOrListsToSetPerSheet(Map<Object, List<?>> objectsOrListsToSetPerSheet) {
-        objectsOrListsToSetPerSheet.forEach((key, value) -> {
-            if (!(key instanceof String || key instanceof Integer)) {
-                throw new ObjectsOrListsToSetPerSheetKeyException(key);
-            }
-
-            // TODO: Add validation for value which cannot be primitive
-        });
-    }
-
     public void parse() {
         checkIfAllElementsHaveBeenSetForParse();
-        MapperProcessor mapperProcessor = new MapperProcessor(mapper);
-        mapperProcessor.process(getObjectsOrListsToSetPerSheetIndex(),
-                                getObjectsOrListsToSetPerSheetName(),
-                                getObjectsOrListsToSetPerSheetIndexOrName());
+        Processor parserProcessor = new ParserProcessor(parserTag);
+        parserProcessor.process();
     }
 
     private void checkIfAllElementsHaveBeenSetForParse() {
         if (workbookToParse == null) {
             throw new WorkbookNotProvidedException();
         } else if (xmlMapper == null) {
-            throw new XmlMapperNotProvidedException();
-        } else if (objectsOrListsToSetPerSheetIndex == null && objectsOrListsToSetPerSheetName == null &&
-                   objectsOrListsToSetPerSheetIndexOrName == null) {
-            throw new MapOfObjectsPerSheetToSetNotProvidedException();
+            throw new XmlNotProvidedException();
+        } else if (objToSet == null) {
+            throw new ObjToSetNotFoundException(NULL);
+        } else if (objToSet.isEmpty()) {
+            throw new ObjToSetNotFoundException(EMPTY);
         }
     }
 }
